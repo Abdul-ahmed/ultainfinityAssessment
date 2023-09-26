@@ -103,7 +103,7 @@ class TelegramController extends Controller
         $this->validateMessageRequest();
         $telegram = new Api(env('TELEGRAM_BOT_TOKEN'));
         try {
-            return $response = $telegram->sendMessage([
+            return $telegram->sendMessage([
                 'chat_id' => $this->request->user_telegram_id,
                 'text' => $this->request->message
             ]);
@@ -112,7 +112,6 @@ class TelegramController extends Controller
                 'status' => 'error',
                 'code' => Response::HTTP_BAD_REQUEST,
                 'message' => $th->getMessage(),
-                'data' => null
             ], Response::HTTP_BAD_REQUEST);
         }
         
