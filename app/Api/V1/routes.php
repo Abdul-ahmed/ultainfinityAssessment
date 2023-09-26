@@ -20,11 +20,11 @@ $router->get('/', function () use ($router) {
 $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('/', 'TelegramController@index');
     $router->post('login', ['as' => 'login', 'uses' => 'TelegramController@login']);
+    $router->get('login-channel', ['as' => 'login.channel', 'uses' => 'TelegramController@channelLogin']);
 
-
-    $router->post('sendmessage', 'TelegramController@sendMessage');
+    $router->post('send-message', 'TelegramController@sendMessage');
     $router->post('webhook', 'TelegramController@webhook');
 });
 
-$router->get('getme', 'TelegramController@testing');
+// $router->get('getme', 'TelegramController@testing');
 // $router->get('botmanager', 'TelegramController@usingBotManager');

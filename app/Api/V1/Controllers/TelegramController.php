@@ -8,7 +8,7 @@ use Telegram\Bot\Api;
 use Telegram\Bot\BotsManager;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Validator;
+// use Illuminate\Validation\Validator;
 
 class TelegramController extends Controller
 {
@@ -66,16 +66,7 @@ class TelegramController extends Controller
 
     public function login()
     {
-        $validateLoginRequest = $this->validateLoginRequest();
-        if ($validateLoginRequest->fails()) {
-            return response()->json([
-                'status' => 'success',
-                'code' => Response::HTTP_BAD_REQUEST,
-                'message' => $validateLoginRequest->errors()->first(),
-                'data' => null
-            ], Response::HTTP_BAD_REQUEST);
-        }
-
+        $this->validateLoginRequest();
         $user = User::where(['telegram_id' => $this->request->telegram_id])->first();
         if (!$user) {
             User::create([
@@ -94,7 +85,7 @@ class TelegramController extends Controller
 
     public function validateLoginRequest()
     {
-        return Validator::make($this->request->all(), [
+        return $this->validate($this->request, [
             'first_name' => 'required|string',
             'last_name' => 'required|string',
             'telegram_id' => 'required|string',
@@ -102,22 +93,37 @@ class TelegramController extends Controller
         ]);
     }
 
+    public function channelLogin()
+    {
+        return redirect()->to('https://t.me/ultainfinityAssessment');
+    }
+
     public function sendMessage()
     {
+        $this->validateMessageRequest();
         $telegram = new Api(env('TELEGRAM_BOT_TOKEN'));
-
-        return $response = $telegram->sendMessage([
-            'chat_id' => $this->request->chat_id,
-            'text' => $this->request->message
-        ]);
+        try {
+            return $response = $telegram->sendMessage([
+                'chat_id' => $this->request->user_telegram_id,
+                'text' => $this->request->message
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'code' => Response::HTTP_BAD_REQUEST,
+                'message' => $th->getMessage(),
+                'data' => null
+            ], Response::HTTP_BAD_REQUEST);
+        }
+        
         
         // $messageId = $response->getMessageId();
     }
 
     public function validateMessageRequest()
     {
-        return Validator::make($this->request->all(), [
-            'chat_id' => 'required|string',
+        return $this->validate($this->request, [
+            'user_telegram_id' => 'required|string',
             'message' => 'required|string'
         ]);
     }
