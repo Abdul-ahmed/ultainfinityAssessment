@@ -14,7 +14,7 @@
 */
 
 $router->get('/', function () use ($router) {
-    return "Welcome Home";
+    return redirect('/api');
 });
 
 $router->group(['prefix' => 'api'], function () use ($router) {
