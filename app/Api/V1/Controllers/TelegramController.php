@@ -2,6 +2,7 @@
 
 namespace App\Api\V1\Controllers;
 
+use App\Models\User;
 use App\Models\Webhook;
 use Telegram\Bot\Api;
 use Telegram\Bot\BotsManager;
@@ -43,9 +44,40 @@ class TelegramController extends Controller
 
     public function webhook()
     {
-        Webhook::create([
-            'response' => json_encode($this->request->all()),
-        ]);
+        if (array_key_exists('text', $this->request->message)) {
+            if ($this->request->message['text'] == '/start') {
+                $user = User::where(['telegram_id' => $this->request->message->from->id])->first();
+                if (!$user) {
+                    User::create([
+                        'first_name' => $this->request->message->from->first_name,
+                        'last_name' => $this->request->message->from->last_name,
+                        'telegram_id' => $this->request->message->from->id,
+                    ]);
+                }
+            }
+        } else {
+            Webhook::create([
+                'response' => json_encode($this->request->all()),
+            ]);
+        }
+    }
+
+    public function login()
+    {
+        $user = User::where(['telegram_id' => $this->request->telegram_id])->first();
+        if (!$user) {
+            User::create([
+                'first_name' => $this->request->first_name,
+                'last_name' => $this->request->last_name,
+                'telegram_id' => $this->request->telegram_id,
+            ]);
+        }
+        return response()->json([
+            'status' => 'success',
+            'code' => Response::HTTP_CREATED,
+            'message' => 'User subscribed successfully',
+            'data' => null
+        ], Response::HTTP_CREATED);
     }
 
 

@@ -19,7 +19,7 @@ $router->get('/', function () use ($router) {
 
 $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('/', 'TelegramController@index');
-    $router->get('login', [
+    $router->post('login', [
         'as' => 'login',
         'uses' => 'TelegramController@login'
     ]);
