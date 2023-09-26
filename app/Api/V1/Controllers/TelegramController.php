@@ -114,8 +114,6 @@ class TelegramController extends Controller
                 'message' => $th->getMessage(),
             ], Response::HTTP_BAD_REQUEST);
         }
-        
-        
         // $messageId = $response->getMessageId();
     }
 
