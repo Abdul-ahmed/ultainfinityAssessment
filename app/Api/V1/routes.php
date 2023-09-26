@@ -13,9 +13,10 @@
 |
 */
 
-$router->get('/', function () use ($router) {
-    return "Welcome Home";
-});
+// $router->get('/', function () use ($router) {
+//     return "Welcome Home";
+// });
+$router->get('/', 'TelegramController@index');
 
 $router->get('getme', 'TelegramController@testing');
 $router->get('botmanager', 'TelegramController@testing');

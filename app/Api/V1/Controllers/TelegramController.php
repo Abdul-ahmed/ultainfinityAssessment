@@ -11,14 +11,14 @@ class TelegramController extends Controller
 {
     protected Request $request;
 
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
     public function __construct(Request $request)
     {
         $this->request = $request;
+    }
+
+    public function index()
+    {
+        return view('home');
     }
 
     public function testing()
