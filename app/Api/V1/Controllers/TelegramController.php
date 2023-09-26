@@ -44,7 +44,7 @@ class TelegramController extends Controller
     public function webhook()
     {
         Webhook::create([
-            'response' => json_decode($this->request->all()),
+            'response' => json_encode($this->request->all()),
         ]);
     }
 
