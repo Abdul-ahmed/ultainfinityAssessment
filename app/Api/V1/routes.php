@@ -13,13 +13,19 @@
 |
 */
 
-// $router->get('/', function () use ($router) {
-//     return "Welcome Home";
-// });
-$router->get('/', 'TelegramController@index');
+$router->get('/', function () use ($router) {
+    return "Welcome Home";
+});
 
-$router->get('getme', 'TelegramController@testing');
-$router->get('botmanager', 'TelegramController@testing');
+$router->group(['prefix' => 'api'], function () use ($router) {
+    $router->get('/', 'TelegramController@index');
+    $router->get('login', [
+        'as' => 'login',
+        'uses' => 'TelegramController@login'
+    ]);
+    
+    $router->post('webhook', 'TelegramController@webhook');
+});
 
-
-$router->post('webhook', 'TelegramController@webhook');
+// $router->get('getme', 'TelegramController@testing');
+// $router->get('botmanager', 'TelegramController@usingBotManager');
