@@ -17,13 +17,29 @@ $router->get('/', function () use ($router) {
     return redirect('/api');
 });
 
-$router->group(['prefix' => 'api'], function () use ($router) {
+$router->post('api/webhook', 'TelegramController@webhook');
+$router->group(['prefix' => 'api', 'middleware' => 'auth.header'], function () use ($router) {
     $router->get('/', 'TelegramController@index');
     $router->post('login', ['as' => 'login', 'uses' => 'TelegramController@login']);
     $router->get('login-channel', ['as' => 'login.channel', 'uses' => 'TelegramController@channelLogin']);
-
     $router->post('send-message', 'TelegramController@sendMessage');
-    $router->post('webhook', 'TelegramController@webhook');
+});
+
+
+$router->get('/api/auth/response', function () use ($router) {
+    return response()->json([
+        'status' => 'error',
+        'code' => 400,
+        'message' => "user-id required on headers",
+    ], 400);
+});
+
+$router->post('/api/auth/response', function () use ($router) {
+    return response()->json([
+        'status' => 'error',
+        'code' => 400,
+        'message' => "user-id required on headers",
+    ], 400);
 });
 
 // $router->get('getme', 'TelegramController@testing');
